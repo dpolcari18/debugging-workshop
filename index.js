@@ -3,25 +3,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const jokeList = document.getElementById('joke-list')
   const newJokeLi = document.createElement('li')
   const username = document.getElementById('name-input').value
-  let joke;
+  let newJoke;
 
-  function fetchJoke(){
-    fetch('https://icanhazdadjoke.com/', {
-      headers: {
-        "Accept": "application/json"
+  let newFetchObj = {
+        headers: {
+          "Accept": "application/json"
+        }
       }
-    })
-    .then(res => res.json())
-    .then(jokeData => joke = jokeData.joke)
+
+  function fetchJoke(event){
+    fetch('https://icanhazdadjoke.com/', newFetchObj)
+
+      .then(res => res.json())
+      .then(jokeData => {
+        newJoke = jokeData.joke
+        newJokeLi.innerHTML = `
+        <span class="username">${event.target.name.value} says:</span> ${newJoke}
+        `
+        jokeList.appendChild(newJokeLi)
+        form.reset()
+      })
   }
 
   form.addEventListener('submit', (event) => {
+    event.preventDefault() 
 
-    if(username === "") return;
-    fetchJoke()
-    newJokeLi.innerHTML = `
-    <span class="username">${username} says:</span> ${joke}
-    `
-    jokeList.appendChild(newJokeLi)
+    if(event.target.name.value === "") {
+      return} else {
+          fetchJoke(event) 
+      }
   })
 })
